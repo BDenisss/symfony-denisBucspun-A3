@@ -1,0 +1,11 @@
+{# templates/article/show.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Article: {{ article.title }}{% endblock %}
+
+{% block body %}
+    <h2>{{ article.title }}</h2>
+    <div>{{ article.content }}</div>
+    {# Ajoutez d'autres champs de l'article comme vous le souhaitez #}
+{% endblock %}

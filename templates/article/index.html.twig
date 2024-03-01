@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ArticleController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Page des articles ✅</h1>
+    <a href="{{ path('article_new') }}">Créer un nouvel article</a>
+
+
+    <h2>Liste des Articles:</h2>
+    <ul>
+        {% for article in articles %}
+            <li>
+                <strong><a href="{{ path('article_show', {'slug': article.slug}) }}">{{ article.title }}</a></strong> - {{ article.content }}
+                <!-- Vous pouvez ajouter ici d'autres détails de l'article, comme la date de publication, l'auteur, etc. -->
+            </li>
+        {% else %}
+            <li>Pas d'articles trouvés.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
