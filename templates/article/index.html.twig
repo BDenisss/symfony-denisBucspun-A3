@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ArticleController!{% endblock %}
+{% block title %}Page des articles{% endblock %}
 
 {% block body %}
 <style>
@@ -8,21 +8,50 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
-<div class="example-wrapper">
-    <h1>Page des articles ✅</h1>
-    <a href="{{ path('article_new') }}">Créer un nouvel article</a>
+    <div class="example-wrapper">
+    <div class="header">
+        <h1>Page des articles ✅</h1>
+        {% if app.user %}
+            <span>Bienvenu(e), {{ app.user.email }}!</span>
+            <a href="{{ path('app_logout') }}" class="btn btn-secondary">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="btn btn-primary">Connexion</a>
+        {% endif %}
+    </div>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <h3>Ajouter un nouvel article</h3>
+        {{ form_start(create_form) }}
+        {{ form_widget(create_form) }}
+        <button type="submit" class="btn btn-success">Créer</button>
+        {{ form_end(create_form) }}
+    {% endif %}
 
 
     <h2>Liste des Articles:</h2>
-    <ul>
-        {% for article in articles %}
-            <li>
-                <strong><a href="{{ path('article_show', {'slug': article.slug}) }}">{{ article.title }}</a></strong> - {{ article.content }}
-                <!-- Vous pouvez ajouter ici d'autres détails de l'article, comme la date de publication, l'auteur, etc. -->
-            </li>
-        {% else %}
-            <li>Pas d'articles trouvés.</li>
-        {% endfor %}
+    {% if articles|length > 0 %}
+        <ul>
+            {% for article in articles %}
+                <li>
+                    <a href="{{ path('article_show_by_slug', {'slug': article.slug}) }}">{{ article.title }}</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <form action="{{ path('article_delete', {'id': article.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun article disponible.</p>
+        <p>Cependant, vous pouvez vous connectez en tant qu'admin afin d'ajouter des produits !</p>
+    {% endif %}
+
+
+
+
+
     </ul>
 </div>
 {% endblock %}

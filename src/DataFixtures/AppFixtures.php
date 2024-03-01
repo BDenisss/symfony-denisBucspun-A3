@@ -3,12 +3,11 @@
 namespace App\DataFixtures;
 
 use App\Entity\Article;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
-use App\Entity\User;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
 
 class AppFixtures extends Fixture
 {
@@ -23,25 +22,25 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create();
 
-        // Création d'un compte admin
-        $admin = new User();
-        $admin->setEmail('admin@example.com');
-        $admin->setPassword($this->passwordHasher->hashPassword(
-            $admin,
-            'adminpassword' // Vous devriez choisir un mot de passe plus sécurisé !
-        ));
-        $admin->setRoles(['ROLE_ADMIN']);
 
-        $manager->persist($admin);
+        $existingAdmin = $manager->getRepository(User::class)->findOneBy(['email' => 'admin@example.com']);
+        if (!$existingAdmin) {
+            $admin = new User();
+            $admin->setEmail('admin@example.com');
+            $admin->setPassword($this->passwordHasher->hashPassword(
+                $admin,
+                'adminpassword'
+            ));
+            $admin->setRoles(['ROLE_ADMIN']);
+            $manager->persist($admin);
+        }
 
-        // Création d'articles
         for ($i = 0; $i < 20; $i++) {
             $article = new Article();
-            $article->setTitle($faker->sentence);
-            $article->setContent($faker->paragraph);
-            $article->setSlug($faker->slug);
-            // Ajoutez d'autres propriétés selon votre entité Article
-            
+            $article->setTitle($faker->sentence(6, true)); 
+            $article->setContent($faker->paragraphs(asText: true));
+            $article->setSlug($faker->unique()->slug());
+
             $manager->persist($article);
         }
 
