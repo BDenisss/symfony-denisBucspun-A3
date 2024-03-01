@@ -26,3 +26,8 @@
 - **Sécurité de la Base de Données** : Utilisez des requêtes paramétrées ou DBAL de Doctrine pour éviter l'injection SQL.
 
 - **Hashage des mots de passe** : N'oubliez pas de faire en sorte que les mots de passe soit hashé !
+
+### Bonus 
+- N'oubliez pas de **Composer install**
+- **php bin/console doctrine:fixtures:load** pour les ajouter les fixtures ainsi que le compte admin qui va avec !
+
